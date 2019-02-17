@@ -70,5 +70,10 @@ module.exports.addPictures = async (req, res) => {
   }
 }
 module.exports.removePictures = async (req, res) => {
-
+  const album = await Albums.unlinkPictures(req.params.albumId, req.body)
+  if (album.length > 0) {
+    res.status(200).send((await formatAlbum(album))[0])
+  } else {
+    res.status(404).send(error(`Album with id ${req.params.albumId} not found`))
+  }
 }

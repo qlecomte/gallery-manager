@@ -33,3 +33,11 @@ module.exports.linkPictures = async (albumId, pictureIds) => {
   await knex.insert(body).into('albums_pictures')
   return knex.select().from('albums').where({ id: albumId })
 }
+module.exports.unlinkPictures = async (albumId, pictureIds) => {
+  let query = knex.del().from('albums_pictures')
+  pictureIds.forEach(function (pictureId) {
+    query = query.orWhere({ albumId: albumId, pictureId: pictureId })
+  })
+  await query
+  return knex.select().from('albums').where({ id: albumId })
+}
