@@ -26,6 +26,63 @@ const formatPicture = (pictures) => {
     }
   })
 }
+const transformCoordinates = (gpsData) => {
+  // Latitude
+  let latitude = null
+  let longitude = null
+  switch (gpsData.latitude.length) {
+    case 1:
+      if (gpsData.latitudeDirection === 'S') {
+        latitude = -gpsData.latitude[0]
+      } else {
+        latitude = gpsData.latitude[0]
+      }
+      break
+    case 2:
+      latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60
+      if (gpsData.latitudeDirection === 'S') {
+        latitude *= -1
+      }
+      break
+    case 3:
+      latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60 + gpsData.latitude[2] / 3600
+      if (gpsData.latitudeDirection === 'S') {
+        latitude *= -1
+      }
+      break
+    default:
+      break
+  }
+
+  // Longitude
+  switch (gpsData.longitude.length) {
+    case 1:
+      if (gpsData.longitudeDirection === 'W') {
+        longitude = -gpsData.longitude[0]
+      } else {
+        longitude = gpsData.longitude[0]
+      }
+      break
+    case 2:
+      longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60
+      if (gpsData.longitudeDirection === 'W') {
+        longitude *= -1
+      }
+      break
+    case 3:
+      longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60 + gpsData.longitude[2] / 3600
+      if (gpsData.longitudeDirection === 'W') {
+        longitude *= -1
+      }
+      break
+    default:
+      break
+  }
+  return {
+    latitude: latitude,
+    longitude: longitude
+  }
+}
 
 module.exports.getPicture = async (req, res) => {
   const picture = await Pictures.getSinglePicture(req.params.pictureId)
@@ -63,13 +120,23 @@ module.exports.getPictureDetails = async (req, res) => {
 module.exports.upload = async (req, res) => {
   const relativePath = `./data/${req.files.picture.name}`
   fs.writeFileSync(relativePath, req.files.picture.data)
+  const exifData = exif.parseSync(path.resolve(relativePath))
+
+  const gpsData = transformCoordinates({
+    latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
+    latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
+    longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
+    longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
+  })
 
   const pictureData = {
     id: generateId(24),
-    name: req.body.name,
+    name: req.body.name || req.files.picture.name,
     description: req.body.description,
     path: path.resolve(relativePath),
-    takenAt: exif.parseSync(path.resolve(relativePath)).DateTime
+    takenAt: exifData.DateTime,
+    coord_lat: gpsData.latitude,
+    coord_lng: gpsData.longitude
   }
   const picture = await Pictures.createPicture(pictureData)
 

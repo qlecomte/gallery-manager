@@ -1,16 +1,16 @@
 const knex = require('../database/knex')
 
 module.exports.getAlbums = async () => {
-  return knex.select().from('albums')
+  return knex.select().from('albums').orderBy('createdAt', 'desc')
 }
 module.exports.getSingleAlbum = async (id) => {
   return knex.select().from('albums').where({ id: id })
 }
 module.exports.getFavoriteAlbums = async () => {
-  return knex.select().from('albums').where({ favorite: 1 })
+  return knex.select().from('albums').where({ favorite: 1 }).orderBy('createdAt', 'desc')
 }
 module.exports.getPictures = async (id) => {
-  return knex.select().from('pictures').join('albums_pictures', 'pictures.id', 'albums_pictures.pictureId').where({ 'albums_pictures.albumId': id })
+  return knex.select().from('pictures').join('albums_pictures', 'pictures.id', 'albums_pictures.pictureId').where({ 'albums_pictures.albumId': id }).orderBy('pictures.takenAt', 'desc')
 }
 module.exports.createAlbum = async (album) => {
   await knex.insert(album).into('albums')
