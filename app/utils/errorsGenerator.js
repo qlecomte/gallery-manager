@@ -1,4 +1,4 @@
-module.exports = function (error) {
+module.exports = (error) => {
   if (typeof error === 'string') {
     return {
       message: error
