@@ -117,6 +117,28 @@ module.exports.getPictureDetails = async (req, res) => {
     res.status(404).send(error(`Picture with id ${req.params.pictureId} not found`))
   }
 }
+module.exports.getFavorites = async (req, res) => {
+  res.status(200).send(formatPicture(await Pictures.getFavoritesPictures()))
+}
+module.exports.modifyPicture = async (req, res) => {
+  req.body.coord_lat = req.body.coordinates ? req.body.coordinates.latitude : undefined
+  req.body.coord_lng = req.body.coordinates ? req.body.coordinates.longitude : undefined
+
+  const picture = await Pictures.modifyPicture(_.pick(req.body, 'name', 'description', 'favorite', 'coord_lat', 'coord_lng'), req.params.pictureId)
+  if (picture.length > 0) {
+    res.status(200).send(formatPicture(picture)[0])
+  } else {
+    res.status(404).send(error(`Picture with id ${req.params.albumId} not found`))
+  }
+}
+module.exports.deletePicture = async (req, res) => {
+  const picture = await Pictures.deletePicture(req.params.pictureId)
+  if (picture > 0) {
+    res.sendStatus(204)
+  } else {
+    res.status(404).send(error(`Picture with id ${req.params.pictureId} not found`))
+  }
+}
 module.exports.upload = async (req, res) => {
   const relativePath = `./data/${req.files.picture.name}`
   fs.writeFileSync(relativePath, req.files.picture.data)
@@ -141,7 +163,4 @@ module.exports.upload = async (req, res) => {
   const picture = await Pictures.createPicture(pictureData)
 
   res.status(200).send(formatPicture(picture))
-}
-module.exports.getFavorites = async (req, res) => {
-  res.status(200).send(formatPicture(await Pictures.getFavoritesPictures()))
 }

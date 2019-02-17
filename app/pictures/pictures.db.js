@@ -10,3 +10,10 @@ module.exports.createPicture = async (picture) => {
   await knex.insert(picture).into('pictures')
   return knex.select().from('pictures').where({ id: picture.id })
 }
+module.exports.modifyPicture = async (picture, id) => {
+  await knex('pictures').where({ id: id }).update(picture)
+  return knex.select().from('pictures').where({ id: id })
+}
+module.exports.deletePicture = async (id) => {
+  return knex('pictures').del().where({ id: id })
+}

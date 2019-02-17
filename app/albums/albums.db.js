@@ -21,7 +21,7 @@ module.exports.modifyAlbum = async (album, id) => {
   return knex.select().from('albums').where({ id: id })
 }
 module.exports.deleteAlbum = async (id) => {
-  return knex('albums').del().where({ id: id })
+  return knex.del().from('albums').where({ id: id })
 }
 module.exports.linkPictures = async (albumId, pictureIds) => {
   let body = pictureIds.map(function (pictureId) {
