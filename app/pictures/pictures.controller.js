@@ -14,7 +14,7 @@ const formatPicture = (pictures) => {
     return {
       id: picture.id,
       name: picture.name,
-      url: `/pictures/${picture.id}`,
+      url: `/api/v1/pictures/${picture.id}`,
       description: picture.description,
       takenAt: picture.takenAt,
       importedAt: picture.importedAt,
@@ -156,7 +156,7 @@ module.exports.upload = async (req, res) => {
     name: req.body.name || req.files.picture.name,
     description: req.body.description,
     path: path.resolve(relativePath),
-    takenAt: exifData.DateTime,
+    takenAt: exifData.DateTime || new Date(),
     coord_lat: gpsData.latitude,
     coord_lng: gpsData.longitude
   }

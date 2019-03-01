@@ -8,12 +8,12 @@ const formatAlbum = async (albums) => {
     return {
       id: album.id,
       name: album.name,
-      url: `/albums/${album.id}`,
+      url: `/api/v1/albums/${album.id}`,
       description: album.description,
       createdAt: album.createdAt,
       updatedAt: album.updatedAt,
       pictures: (await Albums.getPictures(album.id)).map(function (picture) {
-        return `/pictures/${picture.id}`
+        return `/api/v1/pictures/${picture.id}`
       })
     }
   }))

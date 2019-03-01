@@ -11,7 +11,11 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(fileUpload())
 app.use(express.static('public'))
 
-require('./app/albums/albums.routes')(app)
-require('./app/pictures/pictures.routes')(app)
+const routerV1 = express.Router()
+
+require('./app/albums/albums.routes')(routerV1)
+require('./app/pictures/pictures.routes')(routerV1)
+
+app.use('/api/v1', routerV1)
 
 module.exports = app

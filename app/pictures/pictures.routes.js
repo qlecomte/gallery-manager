@@ -1,14 +1,13 @@
 const controller = require('./pictures.controller')
 
-module.exports = (app) => {
-  app.route('/pictures/favorites')
-    .get(controller.getFavorites)
-  app.route('/pictures/:pictureId')
-    .get(controller.getPicture)
-    .patch(controller.modifyPicture)
-    .delete(controller.deletePicture)
-  app.route('/pictures/:pictureId/details')
-    .get(controller.getPictureDetails)
-  app.route('/upload')
-    .post(controller.upload)
+module.exports = (router) => {
+  router.get('/pictures/favorites', controller.getFavorites)
+
+  router.get('/pictures/:pictureId', controller.getPicture)
+  router.patch('/pictures/:pictureId', controller.modifyPicture)
+  router.delete('/pictures/:pictureId', controller.deletePicture)
+
+  router.get('/pictures/:pictureId/details', controller.getPictureDetails)
+
+  router.post('/upload', controller.upload)
 }
