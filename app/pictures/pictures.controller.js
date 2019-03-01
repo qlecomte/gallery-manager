@@ -30,53 +30,55 @@ const transformCoordinates = (gpsData) => {
   // Latitude
   let latitude = null
   let longitude = null
-  switch (gpsData.latitude.length) {
-    case 1:
-      if (gpsData.latitudeDirection === 'S') {
-        latitude = -gpsData.latitude[0]
-      } else {
-        latitude = gpsData.latitude[0]
-      }
-      break
-    case 2:
-      latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60
-      if (gpsData.latitudeDirection === 'S') {
-        latitude *= -1
-      }
-      break
-    case 3:
-      latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60 + gpsData.latitude[2] / 3600
-      if (gpsData.latitudeDirection === 'S') {
-        latitude *= -1
-      }
-      break
-    default:
-      break
-  }
+  if (gpsData && gpsData.latitude && gpsData.longitude) {
+    switch (gpsData.latitude.length) {
+      case 1:
+        if (gpsData.latitudeDirection === 'S') {
+          latitude = -gpsData.latitude[0]
+        } else {
+          latitude = gpsData.latitude[0]
+        }
+        break
+      case 2:
+        latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60
+        if (gpsData.latitudeDirection === 'S') {
+          latitude *= -1
+        }
+        break
+      case 3:
+        latitude = gpsData.latitude[0] + gpsData.latitude[1] / 60 + gpsData.latitude[2] / 3600
+        if (gpsData.latitudeDirection === 'S') {
+          latitude *= -1
+        }
+        break
+      default:
+        break
+    }
 
-  // Longitude
-  switch (gpsData.longitude.length) {
-    case 1:
-      if (gpsData.longitudeDirection === 'W') {
-        longitude = -gpsData.longitude[0]
-      } else {
-        longitude = gpsData.longitude[0]
-      }
-      break
-    case 2:
-      longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60
-      if (gpsData.longitudeDirection === 'W') {
-        longitude *= -1
-      }
-      break
-    case 3:
-      longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60 + gpsData.longitude[2] / 3600
-      if (gpsData.longitudeDirection === 'W') {
-        longitude *= -1
-      }
-      break
-    default:
-      break
+    // Longitude
+    switch (gpsData.longitude.length) {
+      case 1:
+        if (gpsData.longitudeDirection === 'W') {
+          longitude = -gpsData.longitude[0]
+        } else {
+          longitude = gpsData.longitude[0]
+        }
+        break
+      case 2:
+        longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60
+        if (gpsData.longitudeDirection === 'W') {
+          longitude *= -1
+        }
+        break
+      case 3:
+        longitude = gpsData.longitude[0] + gpsData.longitude[1] / 60 + gpsData.longitude[2] / 3600
+        if (gpsData.longitudeDirection === 'W') {
+          longitude *= -1
+        }
+        break
+      default:
+        break
+    }
   }
   return {
     latitude: latitude,
@@ -140,27 +142,41 @@ module.exports.deletePicture = async (req, res) => {
   }
 }
 module.exports.upload = async (req, res) => {
-  const relativePath = `./data/${req.files.picture.name}`
-  fs.writeFileSync(relativePath, req.files.picture.data)
-  const exifData = exif.parseSync(path.resolve(relativePath))
+  const pictures = []
+  if (_.isArray(req.files.pictures)) {
+    req.files.pictures.forEach(function (picture) {
+      pictures.push(picture)
+    })
+  } else {
+    pictures.push(req.files.pictures)
+  }
 
-  const gpsData = transformCoordinates({
-    latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
-    latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
-    longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
-    longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
+  let myPictures = await Promise.all(pictures.map(async function (picture) {
+    const relativePath = `./data/${picture.name}`
+    fs.writeFileSync(relativePath, picture.data)
+    const exifData = exif.parseSync(path.resolve(relativePath))
+
+    const gpsData = transformCoordinates({
+      latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
+      latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
+      longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
+      longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
+    })
+
+    const pictureData = {
+      id: generateId(24),
+      name: picture.name,
+      description: null,
+      path: path.resolve(relativePath),
+      takenAt: exifData.DateTime || new Date(),
+      coord_lat: gpsData.latitude,
+      coord_lng: gpsData.longitude
+    }
+    return Pictures.createPicture(pictureData)
+  }))
+  myPictures = myPictures.map(function (pictures) {
+    return pictures[0]
   })
 
-  const pictureData = {
-    id: generateId(24),
-    name: req.body.name || req.files.picture.name,
-    description: req.body.description,
-    path: path.resolve(relativePath),
-    takenAt: exifData.DateTime || new Date(),
-    coord_lat: gpsData.latitude,
-    coord_lng: gpsData.longitude
-  }
-  const picture = await Pictures.createPicture(pictureData)
-
-  res.status(200).send(formatPicture(picture))
+  res.status(200).send(formatPicture(myPictures))
 }
