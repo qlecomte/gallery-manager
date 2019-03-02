@@ -10,14 +10,20 @@
                     <div class="name">{{picture.name}}</div>
                     <div class="description">{{picture.description}}</div>
                     <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
-                    <div class="coordinates d-none d-sm-block">{{picture.coordinates}}</div>
-                    <div class="details d-none d-sm-block" v-if="picture.exif">
-                        <div>Modèle : {{picture.exif.Model}}</div>
-                        <div>Ouverture : F/{{picture.exif.SubExif.FNumber[0]}}</div>
-                        <div>Longueur Focale : {{picture.exif.SubExif.FocalLength[0]}} mm</div>
-                        <div>Temps d'exposition : 1/{{1/picture.exif.SubExif.ExposureTime}} s</div>
-                        <div>ISO : {{picture.exif.SubExif.PhotographicSensitivity}}</div>
-                    </div>
+                    <div class="coordinates d-none d-sm-block"></div>
+                    <iframe v-if="picture.coordinates && picture.coordinates.latitude && picture.coordinates.longitude"
+                            height="350"
+                            frameborder="0"
+                            scrolling="no"
+                            :src="getMapUrl(picture)">
+                    </iframe>
+                    <!--<div class="details d-none d-sm-block" v-if="picture.exif">-->
+                        <!--<div>Modèle : {{picture.exif.Model}}</div>-->
+                        <!--<div>Ouverture : F/{{picture.exif.SubExif.FNumber[0]}}</div>-->
+                        <!--<div>Longueur Focale : {{picture.exif.SubExif.FocalLength[0]}} mm</div>-->
+                        <!--<div>Temps d'exposition : 1/{{1/picture.exif.SubExif.ExposureTime}} s</div>-->
+                        <!--<div>ISO : {{picture.exif.SubExif.PhotographicSensitivity}}</div>-->
+                    <!--</div>-->
                 </div>
             </div>
         </div>
@@ -45,6 +51,10 @@
           const matches = regex.exec(picture)
           return matches[1]
         }
+      }, getMapUrl: function () {
+        const zoom = 0.0025
+        return picture => `https://www.openstreetmap.org/export/embed.html?bbox=${picture.coordinates.longitude - zoom},${picture.coordinates.latitude - zoom},${picture.coordinates.longitude + zoom},${picture.coordinates.latitude + zoom}&layer=mapnik&marker=${picture.coordinates.latitude},${picture.coordinates.longitude}`
+
       }
     },
     methods: {
