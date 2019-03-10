@@ -2,11 +2,11 @@
     <div>
         <h1 class="container">Picture Details</h1>
         <div>
-            <div class="row no-gutter">
-                <div class="col-md-10 img-container">
+            <div class="row">
+                <div class="img-container">
                     <img class="picture" v-if="picture && picture.url" :src="getPicture(picture.url)"/>
                 </div>
-                <div class="col-md-2 infos" v-if="picture">
+                <div class="infos" v-if="picture">
                     <div class="name">{{picture.name}}</div>
                     <div class="description">{{picture.description}}</div>
                     <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
@@ -75,21 +75,23 @@
   }
 </script>
 <style scoped>
+    .row {
+        display: flex;
+        height: 90vh;
+    }
+
     .img-container{
         background-color: black;
-        height: 90vh;
         padding: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
+        flex: 1;
     }
     .picture {
         max-height: 100%;
+        max-width: 100%;
         display: block;
-    }
-    .row.no-gutter {
-        margin-left: 0;
-        margin-right: 0;
     }
 
     .infos {

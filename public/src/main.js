@@ -2,7 +2,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueAxios from 'vue-axios'
-import BootstrapVue from 'bootstrap-vue'
 import axios from 'axios'
 
 import App from './App.vue'
@@ -14,7 +13,6 @@ import NotFoundComponent from './components/NotFoundComponent.vue'
 
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
-Vue.use(BootstrapVue)
 
 const routes = [
   {
