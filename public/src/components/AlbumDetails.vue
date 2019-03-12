@@ -3,7 +3,7 @@
         <h1>Album Details</h1><h2>{{album.name}}</h2>
 
         <div>
-            <div class="row">
+            <div class="grid">
                 <router-link class="image"
                         v-for="picture in album.pictures"
                         :key="picture"
@@ -52,17 +52,48 @@
   }
 </script>
 <style scoped>
-    .row {
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(6, calc(100vw / 6));
+    }
+
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media screen and (max-width: 1600px) {
+        .grid {
+            grid-template-columns: repeat(5, calc(100vw / 5));
+        }
+    }
+
+    @media screen and (max-width: 1280px) {
+        .grid {
+            grid-template-columns: repeat(4, calc(100vw / 4));
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(2, calc(100vw / 2));
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .grid {
+            grid-template-columns: repeat(1, 100vw);
+        }
+    }
+
+    /*.grid {
         flex-wrap: wrap;
         display: flex;
 
     }
-    .row > div {
-        background: lightgrey;
-        border: 1px solid;
-    }
     .image {
         cursor: pointer;
         flex-grow: 1;
-    }
+    }*/
 </style>
