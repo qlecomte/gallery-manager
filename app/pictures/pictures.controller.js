@@ -1,4 +1,5 @@
 const Pictures = require('./pictures.db')
+const Albums = require('../albums/albums.db')
 const error = require('../utils/errorsGenerator')
 const generateId = require('../utils/idGenerator')
 const exif = require('jpeg-exif')
@@ -22,6 +23,8 @@ const formatPicture = (pictures) => {
         latitude: picture.coord_lat,
         longitude: picture.coord_lng
       },
+      next: picture.next ? `/api/v1/pictures/${picture.next}` : null,
+      previous: picture.previous ? `/api/v1/pictures/${picture.previous}` : null,
       exif: exif.parseSync(picture.path)
     }
   })
@@ -112,9 +115,26 @@ module.exports.getPicture = async (req, res) => {
   }
 }
 module.exports.getPictureDetails = async (req, res) => {
-  const picture = await Pictures.getSinglePicture(req.params.pictureId)
-  if (picture.length > 0) {
-    res.status(200).send(formatPicture(picture)[0])
+  const pictureArray = await Pictures.getSinglePicture(req.params.pictureId)
+  const albumId = req.query.album
+  if (pictureArray.length > 0) {
+    const myPicture = pictureArray[0]
+    if (albumId) {
+      const picturesOnAlbum = await Albums.getPictures(albumId)
+      const pictureIndex = _.findIndex(picturesOnAlbum, function (picture) {
+        return picture.id === myPicture.id
+      })
+      // If the picture is not the last, we retrieve the next one
+      if (pictureIndex < (picturesOnAlbum.length - 1)) {
+        myPicture.next = picturesOnAlbum[pictureIndex + 1].id
+      }
+
+      // If the picture is not the first, we retrieve the previous one
+      if (pictureIndex > 0) {
+        myPicture.previous = picturesOnAlbum[pictureIndex - 1].id
+      }
+    }
+    res.status(200).send(formatPicture(pictureArray)[0])
   } else {
     res.status(404).send(error(`Picture with id ${req.params.pictureId} not found`))
   }

@@ -61,8 +61,8 @@
       }
     },
     methods: {
-      getPictureDetails: function (id) {
-        axios.get('/api/v1/pictures/' + id + '/details')
+      getPictureDetails: function (id, albumId) {
+        axios.get(`/api/v1/pictures/${id}/details?album=${albumId}`)
           .then(response => (this.picture = response.data))
           .catch(error => (console.error(error)))
       }
@@ -73,7 +73,7 @@
       }
     },
     created () {
-      this.getPictureDetails(this.$route.params.id)
+      this.getPictureDetails(this.$route.params.id, this.$route.query.album)
     }
   }
 </script>

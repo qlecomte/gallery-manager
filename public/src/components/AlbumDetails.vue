@@ -7,7 +7,7 @@
                 <router-link class="image"
                         v-for="picture in album.pictures"
                         :key="picture"
-                        :to="'/pictures/' + getId(picture)"
+                        :to="{path:'/pictures/' + getId(picture), query: {album: album.id}}"
                         tag="img"
                         :src="getThumbnail(picture)">
                 </router-link>
