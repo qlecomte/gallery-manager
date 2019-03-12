@@ -18,4 +18,10 @@ require('./app/pictures/pictures.routes')(routerV1)
 
 app.use('/api/v1', routerV1)
 
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Something broke!')
+})
+
 module.exports = app
