@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1>List Albums</h1>
+        <h1 class="title">Mes photos</h1>
         <div v-for="album in albums">
             <router-link class="album-container" :to="'/albums/' + album.id">
                 <img class="image" :src="getCover(album)"/>
@@ -11,6 +11,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import PictureService from '../../services/pictureService'
 
   export default {
     name: 'AlbumList',
@@ -21,7 +22,7 @@
     },
     computed: {
       getCover: function () {
-        return album => album.cover ? `${album.cover}?w=320&h=200` : null
+        return album => album.cover ? PictureService.getThumbnail(album.cover) : null
       }
     },
     methods: {
@@ -37,11 +38,16 @@
   }
 </script>
 <style scoped>
+    .title {
+        text-align: center;
+        margin-top: 16px;
+    }
+
     .album-container {
         position: relative;
         display: inline-block;
-        width: 320px;
-        height: 200px;
+        width: 300px;
+        height: 180px;
         background-color: grey;
     }
 

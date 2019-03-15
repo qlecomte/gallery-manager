@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1 class="container">Picture Details</h1>
         <div>
             <div class="row">
                 <div class="img-container">

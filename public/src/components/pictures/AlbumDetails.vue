@@ -1,7 +1,7 @@
 <template>
     <div class="container">
-        <h1>Album Details</h1><h2>{{album.name}}</h2>
-
+        <h1 class="name">{{album.name}}</h1>
+        <div class="description">{{album.description}}</div>
         <div>
             <div class="grid">
                 <router-link class="image"
@@ -18,6 +18,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import PictureService from '../../services/pictureService'
 
   export default {
     name: 'AlbumDetails',
@@ -30,7 +31,7 @@
       getPicture: function () {
         return picture => picture
       }, getThumbnail: function () {
-        return picture => `${picture}?w=300&h=180`
+        return pictureUrl => PictureService.getThumbnail(pictureUrl)
       }, getId: function () {
         return picture => {
           const regex = /^.*\/([a-zA-Z0-9]*)$/g
@@ -52,6 +53,16 @@
   }
 </script>
 <style scoped>
+    .name {
+        text-align: center;
+        margin-top: 16px;
+    }
+
+    .description {
+        margin: 16px 16px 16px;
+    }
+
+
     .grid {
         display: grid;
         grid-template-columns: repeat(6, calc(100vw / 6));

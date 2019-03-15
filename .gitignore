@@ -1,5 +1,6 @@
 # Project specifics
 local/
+public/dist/
 data/
 
 # Intellij Idea specifics

@@ -2,8 +2,8 @@
 
 <template>
     <div class="body-container">
-        <!--<Header/>-->
         <div class="content">
+            <Navbar/>
             <transition name="fade">
                 <router-view></router-view>
             </transition>
@@ -18,12 +18,14 @@
 <script>
   import Header from './components/Header.vue'
   import Footer from './components/Footer.vue'
+  import Navbar from './components/navbar/Navbar.vue'
 
   export default{
     name: 'App',
     components: {
       Header,
-      Footer
+      Footer,
+      Navbar
     }
   }
 </script>
@@ -35,5 +37,7 @@
     }
     .content {
         flex-grow: 1;
+        margin-left: 50px;
     }
+
 </style>

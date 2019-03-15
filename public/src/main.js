@@ -5,11 +5,14 @@ import VueAxios from 'vue-axios'
 import axios from 'axios'
 
 import App from './App.vue'
-import AlbumList from './components/AlbumList.vue'
-import AlbumDetails from './components/AlbumDetails.vue'
-import PictureDetails from './components/PictureDetails.vue'
+import AlbumList from './components/pictures/AlbumList.vue'
+import AlbumDetails from './components/pictures/AlbumDetails.vue'
+import PictureDetails from './components/pictures/PictureDetails.vue'
 
+import FavoriteList from './components/favorite/Favorites.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
+
+import './../styles/main.css'
 
 Vue.use(VueRouter)
 Vue.use(VueAxios, axios)
@@ -27,7 +30,14 @@ const routes = [
     name: 'PictureDetails',
     path: '/pictures/:id',
     component: PictureDetails
-  }, { path: '*', component: NotFoundComponent }
+  }, {
+    name: 'Favorite',
+    path: '/favorites',
+    component: FavoriteList
+  }, {
+    path: '*',
+    component: NotFoundComponent
+  }
 ]
 
 const router = new VueRouter({ routes: routes })

@@ -1,4 +1,5 @@
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path')
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
   entry: './public/src/main.js',
   // Where should the compiled file go?
   output: {
-    path: path.resolve(__dirname, './public'),
+    path: path.resolve(__dirname, './public/dist'),
     filename: 'bundle.js'
   },
   resolve: {
@@ -37,10 +38,27 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      /* {
+        test: /\.(woff(2)?|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]',
+            outputPath: 'fonts/'
+          }
+        }]
+      }, */
+      {
+        test: /\.svg$/,
+        use: ['vue-svg-loader']
       }
     ]
   },
   plugins: [
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new CopyPlugin([
+      { from: 'public/index.html', to: 'index.html' }
+    ])
   ]
 }
