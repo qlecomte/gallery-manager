@@ -4,13 +4,12 @@
         <div class="description">{{album.description}}</div>
         <div>
             <div class="grid">
-                <router-link class="image"
-                        v-for="picture in album.pictures"
-                        :key="picture"
-                        :to="{path:'/pictures/' + getId(picture), query: {album: album.id}}"
-                        tag="img"
-                        :src="getThumbnail(picture)">
-                </router-link>
+                <Thumbnail class="image"
+                           tag="img"
+                           v-for="picture in album.pictures"
+                           :key="picture"
+                           :url="picture"
+                           :link="{path:'/pictures/' + getId(picture), query: {album: album.id}}"/>
             </div>
         </div>
 
@@ -18,10 +17,13 @@
 </template>
 <script>
   import axios from 'axios'
-  import PictureService from '../../services/pictureService'
+  import Thumbnail from './Thumbnail.vue'
 
   export default {
     name: 'AlbumDetails',
+    components: {
+      Thumbnail
+    },
     data: function () {
       return {
         album: {}
@@ -30,8 +32,6 @@
     computed: {
       getPicture: function () {
         return picture => picture
-      }, getThumbnail: function () {
-        return pictureUrl => PictureService.getThumbnail(pictureUrl)
       }, getId: function () {
         return picture => {
           const regex = /^.*\/([a-zA-Z0-9]*)$/g

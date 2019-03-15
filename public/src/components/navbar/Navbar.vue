@@ -25,10 +25,10 @@
                 <TagIcon class="icon" />
                 <span class="title hide-xs">Tags</span>
             </router-link>
-            <router-link class="navbar--item item-add hide-xs" :to="'/add'">
-                <AddIcon class="icon" />
-                <span class="title hide-xs">Ajouter</span>
-            </router-link>
+            <!--<router-link class="navbar&#45;&#45;item item-add hide-xs" :to="'/add'">-->
+                <!--<AddIcon class="icon" />-->
+                <!--<span class="title hide-xs">Ajouter</span>-->
+            <!--</router-link>-->
             <router-link class="navbar--item item-settings" :to="'/settings'">
                 <SettingsIcon class="icon" />
                 <span class="title hide-xs">Réglages</span>
