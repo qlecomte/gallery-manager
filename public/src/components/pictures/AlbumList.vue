@@ -1,12 +1,13 @@
 <template>
     <div class="container">
         <h1 class="title">Mes photos</h1>
-        <div v-for="album in albums">
-            <router-link class="album-container" :to="'/albums/' + album.id">
+        <div class="grid">
+            <router-link v-for="album in albums" :key="album.id" class="album-container" :to="'/albums/' + album.id">
                 <img class="image" :src="getCover(album.cover)"/>
                 <div class="overlay">{{album.name}}</div>
             </router-link>
         </div>
+
     </div>
 </template>
 <script>
@@ -27,11 +28,13 @@
     methods: {
       listAlbums: function () {
         axios.get('/api/v1/albums')
-          .then(response => (this.albums = response.data))
+          .then(response => (this.albums = response.data.filter(function (album) {
+            return album.pictures.length > 0;
+          })))
           .catch(error => (console.error(error)))
       }
     },
-    beforeMount(){
+    created () {
       this.listAlbums()
     }
   }
@@ -42,17 +45,31 @@
         margin-top: 16px;
     }
 
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(6, calc((100% - (5 * 8px)) / 6));
+        grid-column-gap: 8px;
+        grid-row-gap: 8px;
+        margin-left: 8px;
+        margin-right: 8px;
+    }
+
     .album-container {
         position: relative;
         display: inline-block;
-        width: 300px;
-        height: 180px;
         background-color: grey;
+
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .image {
         display: block;
 
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .overlay {
@@ -64,4 +81,29 @@
         text-align: center;
         opacity: 0.75;
     }
+
+    @media screen and (max-width: 1600px) {
+        .grid {
+            grid-template-columns: repeat(5, calc((100% - (4 * 8px)) / 5));
+        }
+    }
+
+    @media screen and (max-width: 1280px) {
+        .grid {
+            grid-template-columns: repeat(4, calc((100% - (3 * 8px)) / 4));
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .grid {
+            grid-template-columns: repeat(2, calc((100% - (1 * 8px)) / 2));
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .grid {
+            grid-template-columns: repeat(1, 100%);
+        }
+    }
+
 </style>

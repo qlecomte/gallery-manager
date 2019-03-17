@@ -1,5 +1,8 @@
 const knex = require('../database/knex')
 
+module.exports.getAllPictures = async () => {
+  return knex.select('id', 'takenAt').from('pictures').orderBy('takenAt', 'desc')
+}
 module.exports.getSinglePicture = async (id) => {
   return knex.select().from('pictures').where({ id: id })
 }

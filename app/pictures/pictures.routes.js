@@ -2,6 +2,7 @@ const controller = require('./pictures.controller')
 
 module.exports = (router) => {
   router.get('/pictures/favorites', controller.getFavorites)
+  router.get('/pictures/calendar', controller.getCalendar)
 
   router.get('/pictures/:pictureId', controller.getPicture)
   router.patch('/pictures/:pictureId', controller.modifyPicture)

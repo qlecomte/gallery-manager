@@ -9,8 +9,10 @@ import AlbumList from './components/pictures/AlbumList.vue'
 import AlbumDetails from './components/pictures/AlbumDetails.vue'
 import PictureDetails from './components/pictures/PictureDetails.vue'
 
-import FavoriteList from './components/favorite/Favorites.vue'
+import FavoriteList from './components/pictures/Favorites.vue'
+import Calendar from './components/pictures/Calendar.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
+import NotImplementedComponent from './components/NotImplementedComponent.vue'
 
 import './../styles/main.css'
 
@@ -31,9 +33,29 @@ const routes = [
     path: '/pictures/:id',
     component: PictureDetails
   }, {
+    name: 'Search',
+    path: '/search',
+    component: NotImplementedComponent
+  }, {
+    name: 'Map',
+    path: '/map',
+    component: NotImplementedComponent
+  }, {
+    name: 'Calendar',
+    path: '/calendar',
+    component: Calendar
+  }, {
     name: 'Favorite',
     path: '/favorites',
     component: FavoriteList
+  }, {
+    name: 'Tags',
+    path: '/tags',
+    component: NotImplementedComponent
+  }, {
+    name: 'Settings',
+    path: '/settings',
+    component: NotImplementedComponent
   }, {
     path: '*',
     component: NotFoundComponent

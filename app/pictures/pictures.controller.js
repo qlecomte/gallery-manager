@@ -142,6 +142,16 @@ module.exports.getPictureDetails = async (req, res) => {
 module.exports.getFavorites = async (req, res) => {
   res.status(200).send(formatPicture(await Pictures.getFavoritesPictures()))
 }
+module.exports.getCalendar = async (req, res) => {
+  const pictures = await Pictures.getAllPictures()
+  res.status(200).send(pictures.map(function (picture) {
+    return {
+      id: picture.id,
+      url: `/api/v1/pictures/${picture.id}`,
+      takenAt: picture.takenAt
+    }
+  }))
+}
 module.exports.modifyPicture = async (req, res) => {
   req.body.coord_lat = req.body.coordinates ? req.body.coordinates.latitude : undefined
   req.body.coord_lng = req.body.coordinates ? req.body.coordinates.longitude : undefined

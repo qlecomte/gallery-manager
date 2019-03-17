@@ -40,4 +40,10 @@
         margin-left: 50px;
     }
 
+    @media screen and (max-width: 480px) {
+        .content {
+            margin-left: 0;
+        }
+    }
+
 </style>
