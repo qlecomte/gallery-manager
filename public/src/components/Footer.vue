@@ -5,7 +5,7 @@
 </template>
 <style scoped>
     footer {
-        background-color: aqua;
+        background-color: #AA88EE;
         margin-top: 16px;
         margin-left: 50px;
     }

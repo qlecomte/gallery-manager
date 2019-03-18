@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar">
+    <nav class="navbar">
         <div class="navbar--container">
             <router-link class="navbar--item item-search" :to="'/search'">
                 <SearchIcon class="icon" />
@@ -35,10 +35,10 @@
             </router-link>
 
         </div>
-    </div>
+    </nav>
 </template>
 <style scoped>
-    .navbar {
+    nav {
         font-family: 'Sniglet', cursive;
         position: fixed;
         left: 0;
@@ -46,14 +46,14 @@
         z-index: 10;
         width: 50px;
         height: 100%;
-        background: #50049b;
+        background: #6600CC;
         overflow-x: hidden;
         overflow-y: hidden;
         transition: width 0.5s ease;
         color: white;
     }
 
-    .navbar:hover {
+    nav:hover {
         width: 180px;
     }
 
@@ -80,7 +80,7 @@
     }
 
     .navbar--item:hover {
-        background: #6405c1;
+        background: #A00CE8;
     }
 
     .navbar--item .icon {
@@ -95,7 +95,7 @@
     }
 
     @media screen and (max-width: 480px) {
-        .navbar {
+        nav {
             position: fixed;
             bottom: 0;
             top: auto;
@@ -104,7 +104,7 @@
             transition: none;
         }
 
-        .navbar:hover {
+        nav:hover {
             width: 100%;
         }
 

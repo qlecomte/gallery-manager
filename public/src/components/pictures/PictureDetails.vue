@@ -1,34 +1,29 @@
 <template>
-    <div>
-        <div>
-            <div class="row">
-                <div class="img-container">
-                    <img class="picture" v-if="picture && picture.url" :src="getPicture(picture.url)"/>
-                </div>
-                <div class="infos" v-if="picture">
-                    <div class="name">{{picture.name}}</div>
-                    <div class="description">{{picture.description}}</div>
-                    <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
-                    <div class="taken">Ajoutée le : {{picture.importedAt | dateFormat }}</div>
-                    <div class="coordinates d-none d-sm-block"></div>
-                    <iframe v-if="picture.coordinates && picture.coordinates.latitude && picture.coordinates.longitude"
-                            class="minimap"
-                            height="350"
-                            frameborder="0"
-                            scrolling="no"
-                            :src="getMapUrl(picture)">
-                    </iframe>
-                    <!--<div class="details d-none d-sm-block" v-if="picture.exif">Details-->
-                        <!--<div>Modèle : {{picture.exif.Model}}</div>-->
-                        <!--<div>Ouverture : F/{{picture.exif.SubExif.FNumber[0]}}</div>-->
-                        <!--<div>Longueur Focale : {{picture.exif.SubExif.FocalLength[0]}} mm</div>-->
-                        <!--<div>Temps d'exposition : {{picture.exif.SubExif.ExposureTime[0] >= 1 ? picture.exif.SubExif.ExposureTime[0] : ('1/' + 1/picture.exif.SubExif.ExposureTime[0])}} s</div>-->
-                        <!--<div>ISO : {{picture.exif.SubExif.PhotographicSensitivity}}</div>-->
-                    <!--</div>-->
-                </div>
-            </div>
+    <div class="row">
+        <div class="img-container">
+            <img class="picture" v-if="picture && picture.url" :src="getPicture(picture.url)"/>
         </div>
-
+        <div class="infos" v-if="picture">
+            <div class="name">{{picture.name}}</div>
+            <div class="description">{{picture.description}}</div>
+            <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
+            <div class="taken">Ajoutée le : {{picture.importedAt | dateFormat }}</div>
+            <div class="coordinates d-none d-sm-block"></div>
+            <iframe v-if="picture.coordinates && picture.coordinates.latitude && picture.coordinates.longitude"
+                    class="minimap"
+                    height="350"
+                    frameborder="0"
+                    scrolling="no"
+                    :src="getMapUrl(picture)">
+            </iframe>
+            <!--<div class="details d-none d-sm-block" v-if="picture.exif">Details-->
+                <!--<div>Modèle : {{picture.exif.Model}}</div>-->
+                <!--<div>Ouverture : F/{{picture.exif.SubExif.FNumber[0]}}</div>-->
+                <!--<div>Longueur Focale : {{picture.exif.SubExif.FocalLength[0]}} mm</div>-->
+                <!--<div>Temps d'exposition : {{picture.exif.SubExif.ExposureTime[0] >= 1 ? picture.exif.SubExif.ExposureTime[0] : ('1/' + 1/picture.exif.SubExif.ExposureTime[0])}} s</div>-->
+                <!--<div>ISO : {{picture.exif.SubExif.PhotographicSensitivity}}</div>-->
+            <!--</div>-->
+        </div>
     </div>
 </template>
 <script>
@@ -80,8 +75,8 @@
     .row {
         display: inline-grid;
         grid-template-columns: 80% 20%;
-        height: 90vh;
         width: 100%;
+        height: 100%;
     }
 
     .img-container {
@@ -91,7 +86,7 @@
         align-items: center;
         justify-content: center;
         flex: 1;
-        height: 90vh;
+        max-height: 100%;
     }
 
     .picture {
@@ -101,7 +96,7 @@
     }
 
     .infos {
-        background-color: #555;
+        background-color: #6a6a7a;
         padding: 16px;
     }
 
