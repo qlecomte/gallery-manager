@@ -7,7 +7,7 @@ const sharp = require('sharp')
 const _ = require('lodash')
 const fs = require('fs')
 const path = require('path')
-const sizeValues = { 'small': 480, 'medium': 720, 'large': 1440, 'full': null }
+const sizeValues = { 'small': 480, 'medium': 720, 'large': 1440, 'full': null, 'thumbnail': { w: 300, h: 180 } }
 const defaultSize = 720
 
 const formatPicture = (pictures) => {
@@ -105,7 +105,14 @@ module.exports.getPicture = async (req, res) => {
       const sizeName = Object.keys(sizeValues).find(function (size) {
         return size === req.query.size
       })
-      width = sizeValues[sizeName]
+      if (sizeName) {
+        if (Number.isInteger(sizeValues[sizeName])) {
+          width = sizeValues[sizeName]
+        } else if (_.isObject(sizeValues[sizeName])) {
+          width = sizeValues[sizeName].w
+          height = sizeValues[sizeName].h
+        }
+      }
     }
 
     const image = await sharp(picture[0].path).rotate().resize(width, height, 'fill').toBuffer()

@@ -86,6 +86,7 @@
     .navbar--item .icon {
         height: 32px;
         width: auto;
+        fill: white;
     }
 
     .navbar--item .title {

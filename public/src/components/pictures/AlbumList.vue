@@ -22,7 +22,7 @@
     },
     computed: {
       getCover: function () {
-        return albumUrl => albumUrl ? `${albumUrl}?w=300&h=180` : null
+        return albumUrl => albumUrl ? `${albumUrl}?size=thumbnail` : null
       }
     },
     methods: {

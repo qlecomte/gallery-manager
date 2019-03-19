@@ -1,9 +1,15 @@
 <template>
-    <div class="row">
-        <div class="img-container">
-            <img class="picture" v-if="picture && picture.url" :src="getPicture(picture.url)"/>
+    <div class="row" v-if="picture">
+        <div class="img-container" >
+            <router-link v-if='picture.previous' :to="{path:getPrevious(picture), query: {album: $route.query.album}}">
+                <PreviousArrow class="arrow"/>
+            </router-link>
+            <img class="picture" v-if="picture.url" :src="getPicture(picture.url)"/>
+            <router-link v-if='picture.next' :to="{path:getNext(picture), query: {album: $route.query.album}}">
+                <NextArrow class="arrow"/>
+            </router-link>
         </div>
-        <div class="infos" v-if="picture">
+        <div class="infos">
             <div class="name">{{picture.name}}</div>
             <div class="description">{{picture.description}}</div>
             <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
@@ -29,11 +35,17 @@
 <script>
   import axios from 'axios'
   import moment from 'moment'
+  import PreviousArrow from '../../../images/arrows/previous.svg'
+  import NextArrow from '../../../images/arrows/next.svg'
 
   moment.locale('fr')
 
   export default {
     name: 'PictureDetails',
+    components: {
+      PreviousArrow,
+      NextArrow
+    },
     data: function () {
       return {
         picture: null
@@ -41,17 +53,14 @@
     },
     computed: {
       getPicture: function () {
-        return picture => `${picture}?size=full`
-      }, getId: function () {
-        return picture => {
-          const regex = /^.*\/([a-zA-Z0-9]*)$/g
-          const matches = regex.exec(picture)
-          return matches[1]
-        }
+        return picture => `${picture}?size=large`
       }, getMapUrl: function () {
         const zoom = 0.0025
         return picture => `https://www.openstreetmap.org/export/embed.html?bbox=${picture.coordinates.longitude - zoom},${picture.coordinates.latitude - zoom},${picture.coordinates.longitude + zoom},${picture.coordinates.latitude + zoom}&layer=mapnik&marker=${picture.coordinates.latitude},${picture.coordinates.longitude}`
-
+      }, getPrevious: function () {
+        return picture => picture.previous ? picture.previous.replace('/api/v1', '') : null
+      }, getNext: function () {
+        return picture => picture.next ? picture.next.replace('/api/v1', '') : null
       }
     },
     methods: {
@@ -68,6 +77,10 @@
     },
     created () {
       this.getPictureDetails(this.$route.params.id, this.$route.query.album)
+    },
+    beforeRouteUpdate (to, from, next) {
+      this.getPictureDetails(to.params.id, to.query.album)
+      next();
     }
   }
 </script>
@@ -80,19 +93,26 @@
     }
 
     .img-container {
-        background-color: black;
-        padding: 16px;
-        display: flex;
+        display: inline-grid;
+        grid-template-columns: 48px 1fr 48px;
         align-items: center;
-        justify-content: center;
-        flex: 1;
+        justify-items: center;
+        background-color: black;
+        padding: 16px 0;
         max-height: 100%;
+    }
+
+    .arrow {
+        height: 100%;
+        width: 48px;
+        fill: white;
     }
 
     .picture {
         max-height: 100%;
         max-width: 100%;
         display: block;
+        grid-column: 2;
     }
 
     .infos {

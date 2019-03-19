@@ -2,7 +2,9 @@
     <div class="container">
         <h1 class="title">Calendrier</h1>
         <div v-for="day in pictures" :key="day.date">
-            <div class="day">{{day.date | dateFormat}}</div>
+            <div class="day">
+                <span>{{day.date | dateFormat}}</span>
+            </div>
             <PhotoGrid :pictures="urlArray(day.pictures)"/>
         </div>
 
@@ -15,7 +17,7 @@
     }
 
     .day {
-        margin: 16px 8px 8px 8px;
+        margin: 16px 8px 8px 24px;
     }
 </style>
 <script>
@@ -23,13 +25,15 @@
   import moment from 'moment'
   import _ from 'lodash'
   import PhotoGrid from './PhotoGrid.vue'
+  import CalendarIcon from '../../../images/navbar/calendar.svg'
 
   moment.locale('fr')
 
   export default {
     name: 'Calendar',
     components: {
-      PhotoGrid
+      PhotoGrid,
+      CalendarIcon
     },
     data: function () {
       return {

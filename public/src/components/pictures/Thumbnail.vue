@@ -19,7 +19,7 @@
         link: Object
       }, computed: {
         getThumbnail: function () {
-          return pictureUrl => `${pictureUrl}?w=300&h=180`
+          return pictureUrl => `${pictureUrl}?size=thumbnail`
         }
       }
     }

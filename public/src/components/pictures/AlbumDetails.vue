@@ -1,7 +1,10 @@
 <template>
     <div class="container">
-        <h1 class="name">{{album.name}}</h1>
-        <div class="description">{{album.description}}</div>
+        <div class="album-header">
+            <div class="name">{{album.name}}</div>
+            <div class="description">{{album.description}}</div>
+        </div>
+
         <PhotoGrid :pictures="album.pictures" :albumId="album.id" />
     </div>
 </template>
@@ -32,12 +35,26 @@
   }
 </script>
 <style scoped>
+
+    .album-header {
+        margin: 16px;
+        background-color: #b27fe5;
+        padding: 16px;
+    }
+
     .name {
         text-align: center;
-        margin-top: 16px;
+        font-weight: 300;
+        font-size: 48px;
+        color: white;
     }
 
     .description {
-        margin: 16px 16px 16px;
+        font-weight: 400;
+        font-style: italic;
+        padding-top: 24px;
+        text-align: center;
+        margin: 0 25%;
+        color: #FDECBA;
     }
 </style>
