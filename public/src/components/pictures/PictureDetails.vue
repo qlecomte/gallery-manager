@@ -1,13 +1,9 @@
 <template>
     <div class="row" v-if="picture">
         <div class="img-container" >
-            <router-link v-if='picture.previous' :to="{path:getPrevious(picture), query: {album: $route.query.album}}">
-                <PreviousArrow class="arrow"/>
-            </router-link>
+            <PreviousArrow v-if='picture.previous' class="arrow" v-on:click="goToPrevious"/>
             <img class="picture" v-if="picture.url" :src="getPicture(picture.url)"/>
-            <router-link v-if='picture.next' :to="{path:getNext(picture), query: {album: $route.query.album}}">
-                <NextArrow class="arrow"/>
-            </router-link>
+            <NextArrow v-if='picture.next' class="arrow" v-on:click="goToNext"/>
         </div>
         <div class="infos">
             <div class="name">{{picture.name}}</div>
@@ -68,6 +64,13 @@
         axios.get(`/api/v1/pictures/${id}/details?album=${albumId}`)
           .then(response => (this.picture = response.data))
           .catch(error => (console.error(error)))
+      },
+      goToNext: function () {
+        const url = this.picture.next.replace('/api/v1', '')
+        this.$router.replace({path: url, query: {album: this.$route.query.album}})
+      }, goToPrevious: function () {
+        const url = this.picture.previous.replace('/api/v1', '')
+        this.$router.replace({path: url, query: {album: this.$route.query.album}})
       }
     },
     filters: {
@@ -106,6 +109,7 @@
         height: 100%;
         width: 48px;
         fill: white;
+        cursor: pointer;
     }
 
     .picture {

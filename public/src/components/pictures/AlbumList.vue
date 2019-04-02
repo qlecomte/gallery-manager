@@ -8,6 +8,7 @@
             </router-link>
         </div>
 
+        <!--<div id="google-signin-button"></div>-->
     </div>
 </template>
 <script>
@@ -32,7 +33,21 @@
             return album.pictures.length > 0;
           })))
           .catch(error => (console.error(error)))
+      }, onSignIn: function (googleUser) {
+        var profile = googleUser.getBasicProfile();
+        const accessToken = googleUser.getAuthResponse(true).access_token;
+        console.log('ID: ' + profile.getId());
+        axios.get('https://photoslibrary.googleapis.com/v1/albums', {headers: {Authorization: `Bearer ${accessToken}`}})
+          .then(response => {
+            console.info(response.data)
+          }).catch(error => (console.error(error)))
       }
+    },
+    mounted() {
+      gapi.signin2.render('google-signin-button', {
+        scope: 'profile email https://www.googleapis.com/auth/photoslibrary.readonly',
+        onsuccess: this.onSignIn
+      })
     },
     created () {
       this.listAlbums()

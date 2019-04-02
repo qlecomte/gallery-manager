@@ -9,7 +9,7 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(fileUpload())
-app.use(express.static('public/dist'))
+app.use(express.static('public/dist', { maxAge: 86400000 }))
 
 const routerV1 = express.Router()
 

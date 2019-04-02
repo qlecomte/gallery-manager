@@ -5,6 +5,7 @@ const generateId = require('../utils/idGenerator')
 const exif = require('jpeg-exif')
 const sharp = require('sharp')
 const _ = require('lodash')
+const moment = require('moment')
 const fs = require('fs')
 const path = require('path')
 const sizeValues = { 'small': 480, 'medium': 720, 'large': 1440, 'full': null, 'thumbnail': { w: 300, h: 180 } }
@@ -116,7 +117,7 @@ module.exports.getPicture = async (req, res) => {
     }
 
     const image = await sharp(picture[0].path).rotate().resize(width, height, 'fill').toBuffer()
-    res.status(200).contentType('jpeg').end(image, 'binary')
+    res.status(200).set('Cache-Control', 'public, max-age=86400').contentType('jpeg').end(image, 'binary')
   } else {
     res.status(404).send(error(`Picture with id ${req.params.pictureId} not found`))
   }

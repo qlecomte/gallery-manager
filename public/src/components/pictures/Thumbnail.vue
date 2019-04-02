@@ -10,6 +10,11 @@
         height: 100%;
         object-fit: cover;
     }
+
+    .image:hover {
+        box-shadow: 2px 2px 10px black;
+        transform: scale(1.01, 1.01);
+    }
 </style>
 <script>
     export default {

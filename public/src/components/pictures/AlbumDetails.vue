@@ -40,6 +40,8 @@
         margin: 16px;
         background-color: #b27fe5;
         padding: 16px;
+        border-radius: 16px;
+        box-shadow: 2px 2px 5px silver;
     }
 
     .name {
