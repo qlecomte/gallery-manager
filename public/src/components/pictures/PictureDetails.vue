@@ -8,8 +8,9 @@
         <div class="infos">
             <div class="name">{{picture.name}}</div>
             <div class="description">{{picture.description}}</div>
-            <div class="taken">Prise le : {{picture.takenAt | dateFormat }}</div>
-            <div class="taken">Ajoutée le : {{picture.importedAt | dateFormat }}</div>
+            <div class="taken"><CalendarIcon class="icon" /> {{picture.takenAt | dateFormat }}</div>
+            <div class="taken"><CameraIcon class="icon" /> {{picture.exif.Make}} {{picture.exif.Model}}</div>
+            <!--<div class="taken">Ajoutée le : {{picture.importedAt | dateFormat }}</div>-->
             <div class="coordinates d-none d-sm-block"></div>
             <iframe v-if="picture.coordinates && picture.coordinates.latitude && picture.coordinates.longitude"
                     class="minimap"
@@ -33,6 +34,8 @@
   import moment from 'moment'
   import PreviousArrow from '../../../images/arrows/previous.svg'
   import NextArrow from '../../../images/arrows/next.svg'
+  import CalendarIcon from '../../../images/navbar/calendar.svg'
+  import CameraIcon from '../../../images/camera.svg'
 
   moment.locale('fr')
 
@@ -40,7 +43,9 @@
     name: 'PictureDetails',
     components: {
       PreviousArrow,
-      NextArrow
+      NextArrow,
+      CalendarIcon,
+      CameraIcon
     },
     data: function () {
       return {
@@ -136,5 +141,12 @@
 
     .infos .minimap {
         width: 100%;
+    }
+
+    .icon {
+        height: 24px;
+        width: auto;
+        fill: white;
+        margin-right: 8px;
     }
 </style>

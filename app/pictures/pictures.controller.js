@@ -160,6 +160,19 @@ module.exports.getCalendar = async (req, res) => {
     }
   }))
 }
+module.exports.getMap = async (req, res) => {
+  const pictures = await Pictures.getLocalizedPictures()
+  res.status(200).send(pictures.map(function (picture) {
+    return {
+      id: picture.id,
+      url: `/api/v1/pictures/${picture.id}`,
+      coordinates: {
+        latitude: picture.coord_lat,
+        longitude: picture.coord_lng
+      }
+    }
+  }))
+}
 module.exports.modifyPicture = async (req, res) => {
   req.body.coord_lat = req.body.coordinates ? req.body.coordinates.latitude : undefined
   req.body.coord_lng = req.body.coordinates ? req.body.coordinates.longitude : undefined

@@ -3,6 +3,9 @@ const knex = require('../database/knex')
 module.exports.getAllPictures = async () => {
   return knex.select('id', 'takenAt').from('pictures').orderBy('takenAt', 'desc')
 }
+module.exports.getLocalizedPictures = async () => {
+  return knex.select('id', 'coord_lat', 'coord_lng').from('pictures').whereNotNull('coord_lat').whereNotNull('coord_lng')
+}
 module.exports.getSinglePicture = async (id) => {
   return knex.select().from('pictures').where({ id: id })
 }
