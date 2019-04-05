@@ -8,10 +8,10 @@
         <div class="infos">
             <div class="name">{{picture.name}}</div>
             <div class="description">{{picture.description}}</div>
-            <div class="taken"><CalendarIcon class="icon" /> {{picture.takenAt | dateFormat }}</div>
-            <div class="taken"><CameraIcon class="icon" /> {{picture.exif.Make}} {{picture.exif.Model}}</div>
+            <div class="details"><CalendarIcon class="icon" /><span>{{picture.takenAt | dateFormat }}</span></div>
+            <div class="details"><CameraIcon class="icon" /><span>{{picture.exif.Make}} {{picture.exif.Model}}</span></div>
+            <div class="details"><PictureIcon class="icon" /><span>{{picture.exif.SubExif.PixelXDimension}}px × {{picture.exif.SubExif.PixelYDimension}}px</span></div>
             <!--<div class="taken">Ajoutée le : {{picture.importedAt | dateFormat }}</div>-->
-            <div class="coordinates d-none d-sm-block"></div>
             <iframe v-if="picture.coordinates && picture.coordinates.latitude && picture.coordinates.longitude"
                     class="minimap"
                     height="350"
@@ -35,6 +35,7 @@
   import PreviousArrow from '../../../images/arrows/previous.svg'
   import NextArrow from '../../../images/arrows/next.svg'
   import CalendarIcon from '../../../images/navbar/calendar.svg'
+  import PictureIcon from '../../../images/navbar/picture.svg'
   import CameraIcon from '../../../images/camera.svg'
 
   moment.locale('fr')
@@ -45,7 +46,8 @@
       PreviousArrow,
       NextArrow,
       CalendarIcon,
-      CameraIcon
+      CameraIcon,
+      PictureIcon
     },
     data: function () {
       return {
@@ -133,20 +135,25 @@
         font-size: 22px;
     }
 
-    .infos .name, .infos .description, .infos .taken, .infos .coordinates, .infos .details {
+    .infos .name, .infos .description, .infos .details {
         color: white;
         padding-bottom: 8px;
         overflow: hidden;
     }
 
-    .infos .minimap {
-        width: 100%;
+    .infos .details {
+        display: flex;
+        align-items: center;
     }
 
-    .icon {
-        height: 24px;
+    .infos .details .icon {
+        height: 28px;
         width: auto;
         fill: white;
-        margin-right: 8px;
+        margin-right: 12px;
+    }
+
+    .infos .minimap {
+        width: 100%;
     }
 </style>

@@ -1,21 +1,19 @@
 <template>
     <div class="container">
-        <div class="album-header">
-            <div class="name">{{album.name}}</div>
-            <div class="description">{{album.description}}</div>
-        </div>
-
+        <Header :name="album.name" :description="album.description" :cover="album.cover"/>
         <PhotoGrid :pictures="album.pictures" :albumId="album.id" />
     </div>
 </template>
 <script>
   import axios from 'axios'
   import PhotoGrid from './PhotoGrid.vue'
+  import Header from './AlbumHeader.vue'
 
   export default {
     name: 'AlbumDetails',
     components: {
-      PhotoGrid
+      PhotoGrid,
+      Header: Header
     },
     data: function () {
       return {

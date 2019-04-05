@@ -107,7 +107,10 @@ module.exports.getPicture = async (req, res) => {
         return size === req.query.size
       })
       if (sizeName) {
-        if (Number.isInteger(sizeValues[sizeName])) {
+        if (sizeValues[sizeName] == null) {
+          width = null
+          height = null
+        } else if (Number.isInteger(sizeValues[sizeName])) {
           width = sizeValues[sizeName]
         } else if (_.isObject(sizeValues[sizeName])) {
           width = sizeValues[sizeName].w
