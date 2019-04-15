@@ -1,35 +1,11 @@
 <template>
     <nav class="navbar">
         <div class="navbar--container">
-            <router-link class="navbar--item item-search" :to="'/search'">
-                <SearchIcon class="icon" />
-                <span class="title hide-xs">Rechercher</span>
+            <router-link class="navbar--item item-search" :to="'/'">
+                <HomeIcon class="icon" />
+                <span class="title hide-xs">Accueil</span>
             </router-link>
-            <router-link class="navbar--item item-pictures" :to="'/'">
-                <PictureIcon class="icon" />
-                <span class="title hide-xs">Mes Photos</span>
-            </router-link>
-            <router-link class="navbar--item item-map" :to="'/map'">
-                <MapIcon class="icon" />
-                <span class="title hide-xs">Carte</span>
-            </router-link>
-            <router-link class="navbar--item item-calendar hide-xs" :to="'/calendar'">
-                <CalendarIcon class="icon" />
-                <span class="title hide-xs">Timeline</span>
-            </router-link>
-            <router-link class="navbar--item item-favorites" :to="'/favorites'">
-                <FavIcon class="icon" />
-                <span class="title hide-xs">Favoris</span>
-            </router-link>
-            <router-link class="navbar--item item-tags hide-xs" :to="'/tags'">
-                <TagIcon class="icon" />
-                <span class="title hide-xs">Tags</span>
-            </router-link>
-            <!--<router-link class="navbar&#45;&#45;item item-add hide-xs" :to="'/add'">-->
-                <!--<AddIcon class="icon" />-->
-                <!--<span class="title hide-xs">Ajouter</span>-->
-            <!--</router-link>-->
-            <router-link class="navbar--item item-settings" :to="'/settings'">
+            <router-link class="navbar--item item-settings" :to="'/settings/import'">
                 <SettingsIcon class="icon" />
                 <span class="title hide-xs">Réglages</span>
             </router-link>
@@ -46,7 +22,7 @@
         z-index: 1100;
         width: 50px;
         height: 100%;
-        background: aqua;
+        background: #5a6a7a;
         overflow-x: hidden;
         overflow-y: hidden;
         transition: width 0.5s ease;
@@ -80,7 +56,7 @@
     }
 
     .navbar--item:hover {
-        background: aquamarine;
+        background: #6a7a8a;
     }
 
     .navbar--item .icon {
@@ -151,24 +127,13 @@
 
 </style>
 <script>
-  import SearchIcon from '../../../images/navbar/search.svg'
-  import PictureIcon from '../../../images/navbar/picture.svg'
-  import MapIcon from '../../../images/navbar/placeholder.svg'
-  import CalendarIcon from '../../../images/navbar/calendar.svg'
-  import FavIcon from '../../../images/navbar/favorite.svg'
-  import TagIcon from '../../../images/navbar/tag.svg'
-  import AddIcon from '../../../images/navbar/add.svg'
+  import HomeIcon from '../../../images/navbar/home.svg'
   import SettingsIcon from '../../../images/navbar/settings.svg'
 
   export default {
+    name: 'NavbarSettings',
     components: {
-      SearchIcon,
-      PictureIcon,
-      MapIcon,
-      CalendarIcon,
-      FavIcon,
-      TagIcon,
-      AddIcon,
+      HomeIcon,
       SettingsIcon
     }
   }

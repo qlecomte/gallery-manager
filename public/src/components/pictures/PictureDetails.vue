@@ -127,7 +127,7 @@
     }
 
     .infos {
-        background-color: #6a6a7a;
+        background-color: #3a4a5a;
         padding: 16px;
     }
 

@@ -29,7 +29,7 @@
                 <!--<AddIcon class="icon" />-->
                 <!--<span class="title hide-xs">Ajouter</span>-->
             <!--</router-link>-->
-            <router-link class="navbar--item item-settings" :to="'/settings'">
+            <router-link class="navbar--item item-settings" :to="'/settings/import'">
                 <SettingsIcon class="icon" />
                 <span class="title hide-xs">Réglages</span>
             </router-link>
@@ -161,6 +161,7 @@
   import SettingsIcon from '../../../images/navbar/settings.svg'
 
   export default {
+    name: 'Navbar',
     components: {
       SearchIcon,
       PictureIcon,
