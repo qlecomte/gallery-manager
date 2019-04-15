@@ -12,6 +12,7 @@ import PictureDetails from './components/pictures/PictureDetails.vue'
 import FavoriteList from './components/pictures/Favorites.vue'
 import Calendar from './components/pictures/Calendar.vue'
 import Map from './components/map/Map.vue'
+import Settings from './components/settings/Settings.vue'
 import NotFoundComponent from './components/NotFoundComponent.vue'
 import NotImplementedComponent from './components/NotImplementedComponent.vue'
 
@@ -56,7 +57,7 @@ const routes = [
   }, {
     name: 'Settings',
     path: '/settings',
-    component: NotImplementedComponent
+    component: Settings
   }, {
     path: '*',
     component: NotFoundComponent

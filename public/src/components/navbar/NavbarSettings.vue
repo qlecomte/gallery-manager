@@ -46,7 +46,7 @@
         z-index: 1100;
         width: 50px;
         height: 100%;
-        background: #6600CC;
+        background: aqua;
         overflow-x: hidden;
         overflow-y: hidden;
         transition: width 0.5s ease;
@@ -80,7 +80,7 @@
     }
 
     .navbar--item:hover {
-        background: #A00CE8;
+        background: aquamarine;
     }
 
     .navbar--item .icon {

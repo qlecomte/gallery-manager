@@ -23,3 +23,10 @@ module.exports.modifyPicture = async (picture, id) => {
 module.exports.deletePicture = async (id) => {
   return knex('pictures').del().where({ id: id })
 }
+module.exports.modifyCoord = async (name, lat, lng) => {
+  await knex('pictures').where('name', 'like', `${name}%`).update({
+    coord_lat: lat,
+    coord_lng: lng
+  })
+  return knex.select().from('pictures').where('name', 'like', `${name}%`)
+}

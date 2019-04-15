@@ -3,7 +3,8 @@
 <template>
     <div class="body-container">
         <div class="content">
-            <Navbar/>
+            <NavbarSettings v-if="inSettings"/>
+            <Navbar v-else/>
             <transition name="fade">
                 <router-view></router-view>
             </transition>
@@ -19,13 +20,19 @@
   import Header from './components/Header.vue'
   import Footer from './components/Footer.vue'
   import Navbar from './components/navbar/Navbar.vue'
+  import NavbarSettings from './components/navbar/NavbarSettings.vue'
 
   export default{
     name: 'App',
     components: {
       Header,
       Footer,
-      Navbar
+      Navbar,
+      NavbarSettings
+    }, computed: {
+      inSettings: function () {
+        return this.$route.path.includes('settings');
+      }
     }
   }
 </script>

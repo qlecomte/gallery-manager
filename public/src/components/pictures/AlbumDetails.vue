@@ -13,7 +13,7 @@
     name: 'AlbumDetails',
     components: {
       PhotoGrid,
-      Header: Header
+      Header
     },
     data: function () {
       return {
@@ -33,28 +33,4 @@
   }
 </script>
 <style scoped>
-
-    .album-header {
-        margin: 16px;
-        background-color: #b27fe5;
-        padding: 16px;
-        border-radius: 16px;
-        box-shadow: 2px 2px 5px silver;
-    }
-
-    .name {
-        text-align: center;
-        font-weight: 300;
-        font-size: 48px;
-        color: white;
-    }
-
-    .description {
-        font-weight: 400;
-        font-style: italic;
-        padding-top: 24px;
-        text-align: center;
-        margin: 0 25%;
-        color: #FDECBA;
-    }
 </style>
