@@ -5,13 +5,14 @@
                 <UploadIcon/>
             </div>
             <div class="text">
-                <div>Importez vos images</div>
+                <div class="label">Importez vos images</div>
                 <div class="explanation">Glissez et déposez vos images ici pour les ajouter à votre galerie photo.</div>
             </div>
         </div>
     </div>
 </template>
-<style scoped>
+<style scoped lang="scss">
+
     .container {
         display: flex;
         flex-direction: column;
@@ -27,33 +28,36 @@
         flex-direction: column;
         justify-content: stretch;
         align-items: center;
-    }
 
-    .upload-zone .icon {
-        flex: 1;
-        display: flex;
-        align-items: end;
-    }
+        .icon {
+            flex: 1;
+            display: flex;
+            align-items: end;
 
-    .upload-zone .icon svg {
-        height: 96px;
-        fill: #5a6a7a;
-    }
+            svg {
+                height: 96px;
+                fill: #5a6a7a;
+            }
+        }
 
-    .upload-zone .text {
-        flex: 2;
-        fill: #5a6a7a;
-        font-size: 20px;
-        font-weight: 500;
-        text-align: center;
-    }
+        .text {
+            flex: 2;
+            fill: #5a6a7a;
+            text-align: center;
 
-    .upload-zone .text {
-        font-size: 16px;
-        font-weight: 400;
-        margin-top: 8px;
-    }
+            .label {
+                font-size: 20px;
+                font-weight: 500;
+            }
 
+            .explanation {
+                font-size: 16px;
+                font-weight: 400;
+                margin-top: 8px;
+            }
+        }
+
+    }
 
 </style>
 <script>

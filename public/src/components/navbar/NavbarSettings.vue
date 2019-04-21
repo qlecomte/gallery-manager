@@ -6,10 +6,13 @@
                 <span class="title hide-xs">Accueil</span>
             </router-link>
             <router-link class="navbar--item item-settings" :to="'/settings/import'">
+                <UploadIcon class="icon" />
+                <span class="title hide-xs">Ajout</span>
+            </router-link>
+            <router-link class="navbar--item item-settings" :to="'/settings/import'">
                 <SettingsIcon class="icon" />
                 <span class="title hide-xs">Réglages</span>
             </router-link>
-
         </div>
     </nav>
 </template>
@@ -129,12 +132,14 @@
 <script>
   import HomeIcon from '../../../images/navbar/home.svg'
   import SettingsIcon from '../../../images/navbar/settings.svg'
+  import UploadIcon from '../../../images/upload.svg'
 
   export default {
     name: 'NavbarSettings',
     components: {
       HomeIcon,
-      SettingsIcon
+      SettingsIcon,
+      UploadIcon
     }
   }
 </script>
