@@ -4,7 +4,8 @@
   "description": "A new, modern photo gallery manager",
   "main": "./bin/www",
   "scripts": {
-    "watch": "./node_modules/webpack/bin/webpack.js --watch"
+    "watch": "./node_modules/webpack/bin/webpack.js --watch",
+    "start": "./node_modules/webpack/bin/webpack.js && node ./bin/www"
   },
   "repository": {
     "type": "git",
