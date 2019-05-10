@@ -1,4 +1,5 @@
 const Pictures = require('./pictures.db')
+const PictureService = require('./pictures.service')
 const Albums = require('../albums/albums.db')
 const error = require('../utils/errorsGenerator')
 const generateId = require('../utils/idGenerator')
@@ -126,26 +127,11 @@ module.exports.getPicture = async (req, res) => {
   }
 }
 module.exports.getPictureDetails = async (req, res) => {
-  const pictureArray = await Pictures.getSinglePicture(req.params.pictureId)
+  const pictureId = req.params.pictureId
   const albumId = req.query.album
-  if (pictureArray.length > 0) {
-    const myPicture = pictureArray[0]
-    if (albumId) {
-      const picturesOnAlbum = await Albums.getPictures(albumId)
-      const pictureIndex = _.findIndex(picturesOnAlbum, function (picture) {
-        return picture.id === myPicture.id
-      })
-      // If the picture is not the last, we retrieve the next one
-      if (pictureIndex < (picturesOnAlbum.length - 1)) {
-        myPicture.next = picturesOnAlbum[pictureIndex + 1].id
-      }
-
-      // If the picture is not the first, we retrieve the previous one
-      if (pictureIndex > 0) {
-        myPicture.previous = picturesOnAlbum[pictureIndex - 1].id
-      }
-    }
-    res.status(200).send(formatPicture(pictureArray)[0])
+  const picture = await PictureService.getPictureDetails(pictureId, albumId)
+  if (picture) {
+    res.status(200).send(picture)
   } else {
     res.status(404).send(error(`Picture with id ${req.params.pictureId} not found`))
   }

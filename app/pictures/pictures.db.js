@@ -9,6 +9,9 @@ module.exports.getLocalizedPictures = async () => {
 module.exports.getSinglePicture = async (id) => {
   return knex.select().from('pictures').where({ id: id })
 }
+module.exports.getPicturesFromAlbum = async (albumId) => {
+  return knex.select().from('pictures').join('albums_pictures', 'pictures.id', 'albums_pictures.pictureId').where({ 'albums_pictures.albumId': id }).orderBy('pictures.takenAt', 'asc')
+}
 module.exports.getFavoritesPictures = async () => {
   return knex.select().from('pictures').where({ favorite: 1 }).orderBy('takenAt', 'desc')
 }
