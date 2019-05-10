@@ -2,6 +2,8 @@ const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
 const fileUpload = require('express-fileupload')
+const graphqlHTTP = require('express-graphql')
+const { buildSchema } = require('graphql')
 
 const app = express()
 
@@ -10,6 +12,40 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(fileUpload())
 app.use(express.static('public/dist', { maxAge: 86400000 }))
+
+var schema = buildSchema(`
+  scalar Date
+
+  type Query {
+    albums(id: String, onlyFavorites: Boolean): [Album]
+  }
+  
+  type Album {
+    id: String!
+    name: String!
+    url: String!
+    description: String
+    cover: String
+    createdAt: Date
+    updatedAt: Date
+    pictures: [Picture]
+  }
+  
+  type Picture {
+    id: String!
+    name: String!
+  }
+`)
+
+var root = {
+  albums: require('./app/albums/albums.graphql')
+}
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true
+}))
 
 const routerV1 = express.Router()
 
