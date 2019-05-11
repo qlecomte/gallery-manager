@@ -1,7 +1,14 @@
 const Pictures = require('./pictures.db')
+const generateId = require('../utils/idGenerator')
 
 const _ = require('lodash')
 const exif = require('jpeg-exif')
+const sharp = require('sharp')
+const fs = require('fs')
+const path = require('path')
+
+const sizeValues = { 'small': 480, 'medium': 720, 'large': 1440, 'full': null, 'thumbnail': { w: 300, h: 180 } }
+const defaultSize = 720
 
 const formatPicture = (pictures) => {
   return pictures.map(function (picture) {
@@ -10,6 +17,7 @@ const formatPicture = (pictures) => {
       name: picture.name,
       url: `/api/v1/pictures/${picture.id}`,
       description: picture.description,
+      favorite: picture.favorite > 0,
       takenAt: picture.takenAt,
       importedAt: picture.importedAt,
       coordinates: {
@@ -17,8 +25,8 @@ const formatPicture = (pictures) => {
         longitude: picture.coord_lng
       },
       next: picture.next ? `/api/v1/pictures/${picture.next}` : null,
-      previous: picture.previous ? `/api/v1/pictures/${picture.previous}` : null,
-      exif: exif.parseSync(picture.path)
+      previous: picture.previous ? `/api/v1/pictures/${picture.previous}` : null
+      // exif: exif.parseSync(picture.path)
     }
   })
 }
@@ -84,6 +92,42 @@ const transformCoordinates = (gpsData) => {
 }
 
 module.exports = {
+  getPicturesFromAlbum: async function (albumId) {
+    const picturesOnAlbum = await Pictures.getPicturesFromAlbum(albumId)
+    return formatPicture(picturesOnAlbum)
+  },
+  getPicture: async function (pictureId, { w, h, size }) {
+    const picture = await Pictures.getSinglePicture(pictureId)
+    if (picture.length > 0 && fs.existsSync(picture[0].path)) {
+      let width = defaultSize
+      let height = null
+      if (w || h) {
+        if (h && _.isFinite(parseInt(h))) {
+          height = parseInt(h)
+        }
+        if (w && _.isFinite(parseInt(w))) {
+          width = parseInt(w)
+        }
+      } else if (Object.keys(sizeValues).includes(size)) {
+        const sizeName = Object.keys(sizeValues).find(function (mySize) {
+          return mySize === size
+        })
+        if (sizeName) {
+          if (sizeValues[sizeName] == null) {
+            width = null
+            height = null
+          } else if (Number.isInteger(sizeValues[sizeName])) {
+            width = sizeValues[sizeName]
+          } else if (_.isObject(sizeValues[sizeName])) {
+            width = sizeValues[sizeName].w
+            height = sizeValues[sizeName].h
+          }
+        }
+      }
+
+      return sharp(picture[0].path).rotate().resize(width, height, 'fill').toBuffer()
+    }
+  },
   getPictureDetails: async function (pictureId, albumId) {
     const pictureArray = await Pictures.getSinglePicture(pictureId)
     if (pictureArray.length > 0) {
@@ -107,5 +151,51 @@ module.exports = {
     } else {
       return null
     }
+  },
+  getFavorites: async function () {
+    return formatPicture(await Pictures.getFavoritesPictures())
+  },
+  getCalendar: async function () {
+    return formatPicture(await Pictures.getAllPictures())
+  },
+  getMap: async function () {
+    return formatPicture(await Pictures.getLocalizedPictures())
+  },
+  modifyPicture: async function (pictureId, data) {
+    data.coord_lat = data.coordinates ? data.coordinates.latitude : undefined
+    data.coord_lng = data.coordinates ? data.coordinates.longitude : undefined
+    const picture = await Pictures.modifyPicture(data, pictureId)
+    return formatPicture(picture)
+  },
+  deletePicture: async function (pictureId) {
+    return Pictures.deletePicture(pictureId)
+  },
+  uploadPicture: async function (pictures) {
+    let myPictures = await Promise.all(pictures.map(async function (picture) {
+      const relativePath = `./data/${picture.name}`
+      fs.writeFileSync(relativePath, picture.data)
+      const exifData = exif.parseSync(path.resolve(relativePath))
+
+      const gpsData = transformCoordinates({
+        latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
+        latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
+        longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
+        longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
+      })
+
+      const pictureData = {
+        id: generateId(24),
+        name: picture.name,
+        description: null,
+        path: path.resolve(relativePath),
+        takenAt: exifData.DateTime || new Date(),
+        coord_lat: gpsData.latitude,
+        coord_lng: gpsData.longitude
+      }
+      return Pictures.createPicture(pictureData)
+    }))
+    return formatPicture(myPictures.map(function (pictures) {
+      return pictures[0]
+    }))
   }
 }

@@ -1,6 +1,5 @@
 const AlbumService = require('./albums.service')
 const error = require('../utils/errorsGenerator')
-const idGenerator = require('../utils/idGenerator')
 const _ = require('lodash')
 
 module.exports.getAlbums = async (req, res) => {
@@ -19,8 +18,7 @@ module.exports.getFavorites = async (req, res) => {
 }
 module.exports.createAlbum = async (req, res) => {
   if (_.isString(req.body.name) && !_.isEmpty(req.body.name)) {
-    req.body.id = idGenerator()
-    const album = await AlbumService.createAlbum(_.pick(req.body, 'id', 'name', 'description'))
+    const album = await AlbumService.createAlbum(_.pick(req.body, 'name', 'description'))
     res.status(201).send(album[0])
   } else {
     res.status(400).send(error('"name" field is missing or is not a string'))

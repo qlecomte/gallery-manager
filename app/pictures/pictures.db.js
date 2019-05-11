@@ -1,16 +1,16 @@
 const knex = require('../database/knex')
 
 module.exports.getAllPictures = async () => {
-  return knex.select('id', 'takenAt').from('pictures').orderBy('takenAt', 'desc')
+  return knex.select().from('pictures').orderBy('takenAt', 'desc')
 }
 module.exports.getLocalizedPictures = async () => {
-  return knex.select('id', 'coord_lat', 'coord_lng').from('pictures').whereNotNull('coord_lat').whereNotNull('coord_lng')
+  return knex.select().from('pictures').whereNotNull('coord_lat').whereNotNull('coord_lng')
 }
 module.exports.getSinglePicture = async (id) => {
   return knex.select().from('pictures').where({ id: id })
 }
 module.exports.getPicturesFromAlbum = async (albumId) => {
-  return knex.select().from('pictures').join('albums_pictures', 'pictures.id', 'albums_pictures.pictureId').where({ 'albums_pictures.albumId': id }).orderBy('pictures.takenAt', 'asc')
+  return knex.select().from('pictures').join('albums_pictures', 'pictures.id', 'albums_pictures.pictureId').where({ 'albums_pictures.albumId': albumId }).orderBy('pictures.takenAt', 'asc')
 }
 module.exports.getFavoritesPictures = async () => {
   return knex.select().from('pictures').where({ favorite: 1 }).orderBy('takenAt', 'desc')

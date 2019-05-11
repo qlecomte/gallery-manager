@@ -1,4 +1,6 @@
 const Albums = require('./albums.db')
+const PictureService = require('../pictures/pictures.service')
+const generateId = require('../utils/idGenerator')
 
 const zipArchiver = require('../utils/zipArchiver')
 
@@ -11,10 +13,11 @@ const formatAlbum = async (albums) => {
       name: album.name,
       url: `/api/v1/albums/${album.id}`,
       description: album.description,
+      favorite: album.favorite > 0,
       cover: album.cover ? `/api/v1/pictures/${album.cover}` : null,
       createdAt: album.createdAt,
       updatedAt: album.updatedAt,
-      pictures: (await Albums.getPictures(album.id))
+      pictures: (await PictureService.getPicturesFromAlbum(album.id))
     }
   }))
 }
@@ -30,6 +33,7 @@ module.exports = {
     return formatAlbum(await Albums.getFavoriteAlbums())
   },
   createAlbum: async function (data) {
+    data.id = generateId(10)
     const album = await Albums.createAlbum(data)
     return formatAlbum(album)
   },

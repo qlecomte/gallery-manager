@@ -34,6 +34,15 @@ var schema = buildSchema(`
   type Picture {
     id: String!
     name: String!
+    url: String
+    favorite: Boolean
+    takenAt: Date
+    coordinates: Coordinate
+  }
+  
+  type Coordinate {
+    latitude: Float
+    longitude: Float
   }
 `)
 
