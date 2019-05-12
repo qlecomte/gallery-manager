@@ -21,17 +21,17 @@ module.exports.getPictureDetails = async (req, res) => {
   }
 }
 module.exports.getFavorites = async (req, res) => {
-  res.status(200).send(await PictureService.getFavorites())
+  res.status(200).send(await PictureService.getAllPictures({ onlyFavorites: true }))
 }
 module.exports.getCalendar = async (req, res) => {
-  const pictures = await PictureService.getCalendar()
+  const pictures = await PictureService.getAllPictures()
   res.status(200).send(pictures.map(function (picture) {
     const { id, url, takenAt } = picture
     return { id, url, takenAt }
   }))
 }
 module.exports.getMap = async (req, res) => {
-  const pictures = await PictureService.getMap()
+  const pictures = await PictureService.getAllPictures({ onMap: true })
   res.status(200).send(pictures.map(function (picture) {
     return {
       id: picture.id,

@@ -18,6 +18,7 @@ var schema = buildSchema(`
 
   type Query {
     albums(id: String, onlyFavorites: Boolean): [Album]
+    pictures(id: String, onlyFavorites: Boolean, onMap: Boolean): [Picture]
   }
   
   type Album {
@@ -37,6 +38,7 @@ var schema = buildSchema(`
     url: String
     favorite: Boolean
     takenAt: Date
+    importedAt: Date
     coordinates: Coordinate
   }
   
@@ -47,10 +49,11 @@ var schema = buildSchema(`
 `)
 
 var root = {
-  albums: require('./app/albums/albums.graphql')
+  albums: require('./app/albums/albums.graphql'),
+  pictures: require('./app/pictures/pictures.graphql')
 }
 
-app.use('/graphql', graphqlHTTP({
+app.use('/api/v1/graphql', graphqlHTTP({
   schema: schema,
   rootValue: root,
   graphiql: true

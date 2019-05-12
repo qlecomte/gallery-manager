@@ -2,11 +2,18 @@ const AlbumService = require('./albums.service')
 const error = require('../utils/errorsGenerator')
 const _ = require('lodash')
 
+function formatPictureUrls (albums) {
+  return albums.map(album => {
+    album.pictures = album.pictures.map(picture => `/api/v1/pictures/${picture.id}`)
+    return album
+  })
+}
+
 module.exports.getAlbums = async (req, res) => {
-  res.status(200).send(await AlbumService.getAllAlbums())
+  res.status(200).send(formatPictureUrls(await AlbumService.getAllAlbums()))
 }
 module.exports.getSingleAlbum = async (req, res) => {
-  const album = await AlbumService.getSingleAlbum(req.params.albumId)
+  const album = formatPictureUrls(await AlbumService.getAllAlbums({ id: req.params.albumId }))
   if (album.length > 0) {
     res.status(200).send(album[0])
   } else {
@@ -14,7 +21,7 @@ module.exports.getSingleAlbum = async (req, res) => {
   }
 }
 module.exports.getFavorites = async (req, res) => {
-  res.status(200).send(await AlbumService.getFavorites())
+  res.status(200).send(formatPictureUrls(await AlbumService.getAllAlbums({ onlyFavorites: true })))
 }
 module.exports.createAlbum = async (req, res) => {
   if (_.isString(req.body.name) && !_.isEmpty(req.body.name)) {

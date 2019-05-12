@@ -19,13 +19,6 @@
                     scrolling="no"
                     :src="getMapUrl(picture)">
             </iframe>
-            <!--<div class="details d-none d-sm-block" v-if="picture.exif">Details-->
-                <!--<div>Modèle : {{picture.exif.Model}}</div>-->
-                <!--<div>Ouverture : F/{{picture.exif.SubExif.FNumber[0]}}</div>-->
-                <!--<div>Longueur Focale : {{picture.exif.SubExif.FocalLength[0]}} mm</div>-->
-                <!--<div>Temps d'exposition : {{picture.exif.SubExif.ExposureTime[0] >= 1 ? picture.exif.SubExif.ExposureTime[0] : ('1/' + 1/picture.exif.SubExif.ExposureTime[0])}} s</div>-->
-                <!--<div>ISO : {{picture.exif.SubExif.PhotographicSensitivity}}</div>-->
-            <!--</div>-->
         </div>
     </div>
 </template>

@@ -25,8 +25,8 @@ const formatPicture = (pictures) => {
         longitude: picture.coord_lng
       },
       next: picture.next ? `/api/v1/pictures/${picture.next}` : null,
-      previous: picture.previous ? `/api/v1/pictures/${picture.previous}` : null
-      // exif: exif.parseSync(picture.path)
+      previous: picture.previous ? `/api/v1/pictures/${picture.previous}` : null,
+      exif: exif.parseSync(picture.path)
     }
   })
 }
@@ -92,6 +92,21 @@ const transformCoordinates = (gpsData) => {
 }
 
 module.exports = {
+  getAllPictures: async function (filter) {
+    let pictures = formatPicture(await Pictures.getAllPictures())
+    if (filter) {
+      if (filter.onlyFavorites) {
+        pictures = pictures.filter(picture => picture.favorite)
+      }
+      if (filter.onMap) {
+        pictures = pictures.filter(picture => picture.coordinates.latitude && picture.coordinates.longitude)
+      }
+      if (filter.id) {
+        pictures = pictures.filter(picture => picture.id === filter.id)
+      }
+    }
+    return pictures
+  },
   getPicturesFromAlbum: async function (albumId) {
     const picturesOnAlbum = await Pictures.getPicturesFromAlbum(albumId)
     return formatPicture(picturesOnAlbum)
@@ -151,15 +166,6 @@ module.exports = {
     } else {
       return null
     }
-  },
-  getFavorites: async function () {
-    return formatPicture(await Pictures.getFavoritesPictures())
-  },
-  getCalendar: async function () {
-    return formatPicture(await Pictures.getAllPictures())
-  },
-  getMap: async function () {
-    return formatPicture(await Pictures.getLocalizedPictures())
   },
   modifyPicture: async function (pictureId, data) {
     data.coord_lat = data.coordinates ? data.coordinates.latitude : undefined

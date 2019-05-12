@@ -23,14 +23,17 @@ const formatAlbum = async (albums) => {
 }
 
 module.exports = {
-  getAllAlbums: async function () {
-    return formatAlbum(await Albums.getAlbums())
-  },
-  getSingleAlbum: async function (albumId) {
-    return formatAlbum(await Albums.getSingleAlbum(albumId))
-  },
-  getFavorites: async function () {
-    return formatAlbum(await Albums.getFavoriteAlbums())
+  getAllAlbums: async function (filters) {
+    let albums = await formatAlbum(await Albums.getAlbums())
+    if (filters) {
+      if (filters.onlyFavorites) {
+        albums = albums.filter(album => album.favorite)
+      }
+      if (filters.id) {
+        albums = albums.filter(album => album.id === filters.id)
+      }
+    }
+    return albums
   },
   createAlbum: async function (data) {
     data.id = generateId(10)
