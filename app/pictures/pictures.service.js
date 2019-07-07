@@ -182,22 +182,29 @@ module.exports = {
       fs.writeFileSync(relativePath, picture.data)
       const exifData = exif.parseSync(path.resolve(relativePath))
 
-      const gpsData = transformCoordinates({
-        latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
-        latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
-        longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
-        longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
-      })
-
       const pictureData = {
         id: generateId(24),
         name: picture.name,
         description: null,
         path: path.resolve(relativePath),
-        takenAt: exifData.DateTime || new Date(),
-        coord_lat: gpsData.latitude,
-        coord_lng: gpsData.longitude
+        takenAt: new Date(),
+        coord_lat: null,
+        coord_lng: null
       }
+
+      if (exifData) {
+        const gpsData = transformCoordinates({
+          latitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitude : [],
+          latitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLatitudeRef : null,
+          longitude: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitude : [],
+          longitudeDirection: exifData.GPSInfo ? exifData.GPSInfo.GPSLongitudeRef : null
+        })
+
+        pictureData.coord_lat = gpsData.latitude
+        pictureData.coord_lng = gpsData.longitude
+        pictureData.takenAt = exifData.DateTime
+      }
+
       return Pictures.createPicture(pictureData)
     }))
     return formatPicture(myPictures.map(function (pictures) {
