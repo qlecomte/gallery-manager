@@ -10,10 +10,10 @@ function formatPictureUrls (albums) {
 }
 
 module.exports.getAlbums = async (req, res) => {
-  res.status(200).send(formatPictureUrls(await AlbumService.getAllAlbums()))
+  res.status(200).send(await AlbumService.getAllAlbums())
 }
 module.exports.getSingleAlbum = async (req, res) => {
-  const album = formatPictureUrls(await AlbumService.getAllAlbums({ id: req.params.albumId }))
+  const album = formatPictureUrls(await AlbumService.getAllAlbums({ id: req.params.albumId, withPictures: true }))
   if (album.length > 0) {
     res.status(200).send(album[0])
   } else {
@@ -21,7 +21,7 @@ module.exports.getSingleAlbum = async (req, res) => {
   }
 }
 module.exports.getFavorites = async (req, res) => {
-  res.status(200).send(formatPictureUrls(await AlbumService.getAllAlbums({ onlyFavorites: true })))
+  res.status(200).send(await AlbumService.getAllAlbums({ onlyFavorites: true }))
 }
 module.exports.createAlbum = async (req, res) => {
   if (_.isString(req.body.name) && !_.isEmpty(req.body.name)) {

@@ -16,8 +16,7 @@ const formatAlbum = async (albums) => {
       favorite: album.favorite > 0,
       cover: album.cover ? `/api/v1/pictures/${album.cover}` : null,
       createdAt: album.createdAt,
-      updatedAt: album.updatedAt,
-      pictures: (await PictureService.getPicturesFromAlbum(album.id))
+      updatedAt: album.updatedAt
     }
   }))
 }
@@ -31,6 +30,12 @@ module.exports = {
       }
       if (filters.id) {
         albums = albums.filter(album => album.id === filters.id)
+      }
+      if (filters.withPictures) {
+        albums = Promise.all(albums.map(async album => {
+          album.pictures = (await PictureService.getPicturesFromAlbum(album.id))
+          return album
+        }))
       }
     }
     return albums

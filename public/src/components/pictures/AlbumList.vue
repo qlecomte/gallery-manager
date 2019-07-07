@@ -29,9 +29,7 @@
     methods: {
       listAlbums: function () {
         axios.get('/api/v1/albums')
-          .then(response => (this.albums = response.data.filter(function (album) {
-            return album.pictures.length > 0;
-          })))
+          .then(response => (this.albums = response.data))
           .catch(error => (console.error(error)))
       }, onSignIn: function (googleUser) {
         var profile = googleUser.getBasicProfile();

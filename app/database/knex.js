@@ -1,6 +1,6 @@
 const config = require('../config')
 
-module.exports = require('knex')({
+const knex = require('knex')({
   client: 'mysql',
   version: '5.7',
   connection: {
@@ -11,3 +11,11 @@ module.exports = require('knex')({
     database: config.database.database
   }
 })
+
+knex.on('query', (queryData) => {
+  if (queryData && queryData.sql) {
+    console.debug('SQL Query: ' + queryData.sql)
+  }
+})
+
+module.exports = knex
