@@ -24,11 +24,18 @@
         background: no-repeat center;
         background-size: cover;
         width: 100%;
+        height: 300px;
+        display: flex;
     }
 
     .album-header .dim {
         background-color: #0009;
         padding: 48px 16px;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
     }
 
     .name {
@@ -41,9 +48,8 @@
     .description {
         font-weight: 400;
         font-style: italic;
+        font-size: 20px;
         padding-top: 24px;
-        text-align: center;
-        margin: 0 25%;
         color: #FDECBA;
     }
 </style>

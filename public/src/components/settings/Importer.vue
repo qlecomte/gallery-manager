@@ -2,25 +2,22 @@
     <div class="container">
         <div class="upload-zone" id="file-drag-drop">
             <form ref="fileform">
-                <div class="icon">
+                <div class="icon" v-show="files.length === 0">
                     <UploadIcon/>
                 </div>
-                <div class="text">
+                <div class="text" v-show="files.length === 0">
                     <div class="label">Importez vos images</div>
-                    <div class="explanation">Glissez et déposez vos images ici pour les ajouter à votre galerie photo.</div>
-                    <div class="upload-button">Envoyez vos photos</div>
+                    <div class="explanation" v-show="dragAndDropCapable">Glissez et déposez vos images ici pour les ajouter à votre galerie photo.</div>
+                    <div class="select-pictures" @click="$refs.file.click()">Sélectionnez vos photos à importer</div>
+                    <input type="file" accept="image/*" ref="file" multiple style="display: none" @change="processImage($event)">
+                    <!--<div class="upload-button">Envoyez vos photos</div>-->
                 </div>
                 <div class="grid">
-                    <div v-for="(file, key) in files" class="file-listing">
-                        <div class="thumbnail">
-                            <img class="preview" v-bind:ref="'preview'+parseInt( key )"/>
-                            <UploadIcon class="upload-icon"/>
-                        </div>
-                        <div class="details">
-                            <span>{{ file.name }}</span>
-                        </div>
-                        <div class="close-icon" @click="removePicture(key)">
-                            <CancelIcon/>
+                    <div v-for="(file) in files">
+                        <div class="file">
+                            <UploadIcon class="upload-icon" @click="uploadPicture(file)"/>
+                            <progress class="progressbar" :id="'progressbar_' + file.name" max="100" value="0"></progress>
+                            <span class="filename">{{ file.name }}</span>
                         </div>
                     </div>
                 </div>
@@ -77,51 +74,34 @@
                     font-weight: 400;
                     margin-top: 8px;
                 }
+
+                .select-pictures {
+                    font-size: 16px;
+                    font-weight: 300;
+                    margin-top: 16px;
+                    padding-top: 16px;
+                    padding-bottom: 16px;
+                    background-color: #2a3a4a;
+                    color: white;
+                }
             }
         }
     }
 
     .grid {
-        display: grid;
-        grid-template-columns: repeat(5, calc(100% / 5));
         width: 100%;
 
-        .file-listing {
-            border: 1px solid #3a4a5a;
-            display: flex;
-            flex-direction: row;
-            word-break: break-all;
-            position: relative;
+        .file {
+            .progressbar {
 
-            .thumbnail {
-                height: 120px;
-                width: 120px;
-
-                position: relative;
-                text-align: center;
-                color: white;
-
-                .preview {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: contain;
-                }
-
-                .upload-icon {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    fill: #5a6a7a;
-                }
             }
 
-            .close-icon {
-                height: 20px;
-                width: 20px;
-                position: absolute;
-                top: 8px;
-                right: 8px;
+            .upload-icon {
+                height: 24px;
+            }
+
+            .filename {
+                margin: 8px;
             }
         }
     }
@@ -133,6 +113,7 @@
   import CancelIcon from '../../../images/arrows/cancel.svg'
 
   import axios from 'axios'
+  import Promise from 'bluebird'
 
   export default {
     name: 'Importer',
@@ -168,53 +149,39 @@
           && 'FormData' in window
           && 'FileReader' in window;
       },
-      getImagePreviews() {
-
-        // Iterate over all of the files and generate an image preview for each one.
-        for( let i = 0; i < this.files.length; i++ ){
-
-          // Ensure the file is an image file
-          if ( /\.(jpe?g|png|gif)$/i.test( this.files[i].name ) ) {
-
-            // Create a new FileReader object
-            let reader = new FileReader();
-
-            // Add an event listener for when the file has been loaded to update the src on the file preview.
-            reader.addEventListener("load", function(){
-              this.$refs['preview'+parseInt( i )][0].src = reader.result;
-            }.bind(this), false);
-
-            /*
-              Read the data for the file in through the reader. When it has
-              been loaded, we listen to the event propagated and set the image
-              src to what was loaded from the reader.
-            */
-            reader.readAsDataURL( this.files[i] );
-          } else {
-
-            // We do the next tick so the reference is bound and we can access it.
-            this.$nextTick(function(){
-              this.$refs['preview'+parseInt( i )][0].src = '/images/file.png';
-            });
-          }
+      processImage(event) {
+        console.info(event.target.files);
+        for(let i = 0; i < event.target.files.length; i++){
+          this.addImage(event.target.files[i])
         }
+      },
+      addImage(file) {
+        this.files.push(file);
       },
       removePicture(key) {
         this.files.splice(key, 1);
-        this.getImagePreviews();
       },
       uploadPicture(file) {
-        console.info('start upload');
+        console.info('start upload for ' + file.name);
         const formData = new FormData();
         formData.append('pictures', file);
-        axios.post('/api/v1/upload', formData)
-          .then(function (result) {
-            console.info('end upload');
-            console.info(result);
-          }).catch(function (err) {
-            console.info('end upload');
-            console.error(err);
+        axios.post('/api/v1/upload', formData, {
+          onUploadProgress: function (progressEvent) {
+            console.info(progressEvent);
+            let progressValue = progressEvent.loaded / progressEvent.total * 100;
+            document.getElementById("progressbar_" + file.name).value = progressValue;
+          }
+        }).then(function (result) {
+          console.info('end upload for ' + file.name);
+          return Promise.resolve(result);
+        }).catch(function (err) {
+          console.info('end upload for ' + file.name);
+          console.error(err);
+          throw err;
         })
+      },
+      uploadAllPictures() {
+        return Promise.each(this.files, this.uploadPicture);
       }
     },
     mounted() {
@@ -238,12 +205,10 @@
 
         // Add an event listener for drop to the form
         window.addEventListener('drop', function(e){
-          console.info(e);
+          console.info(e.dataTransfer.files);
           // Capture the files from the drop event and add them to our local files array.
           for( let i = 0; i < e.dataTransfer.files.length; i++ ){
-            this.files.push( e.dataTransfer.files[i] );
-            this.getImagePreviews();
-
+            this.addImage(e.dataTransfer.files[i])
             // this.uploadPicture(e.dataTransfer.files[i]);
           }
         }.bind(this));

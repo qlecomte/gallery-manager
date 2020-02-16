@@ -64,13 +64,25 @@
         axios.get(`/api/v1/pictures/${id}/details?album=${albumId}`)
           .then(response => (this.picture = response.data))
           .catch(error => (console.error(error)))
-      },
-      goToNext: function () {
+      }, goToNext: function () {
         const url = this.picture.next.replace('/api/v1', '')
         this.$router.replace({path: url, query: {album: this.$route.query.album}})
       }, goToPrevious: function () {
         const url = this.picture.previous.replace('/api/v1', '')
         this.$router.replace({path: url, query: {album: this.$route.query.album}})
+      }, keyListener: function (event) {
+        switch (event.code) {
+          case 'ArrowLeft':
+            if (this.picture.previous){
+              this.goToPrevious()
+            }
+            break
+          case 'ArrowRight':
+            if (this.picture.next){
+              this.goToNext()
+            }
+            break
+        }
       }
     },
     filters: {
@@ -81,13 +93,19 @@
     created () {
       this.getPictureDetails(this.$route.params.id, this.$route.query.album)
     },
+    mounted () {
+      document.addEventListener("keyup", this.keyListener)
+    },
+    destroyed () {
+      document.removeEventListener("keyup", this.keyListener)
+    },
     beforeRouteUpdate (to, from, next) {
       this.getPictureDetails(to.params.id, to.query.album)
       next();
     }
   }
 </script>
-<style scoped>
+<style scoped lang="scss">
     .row {
         display: inline-grid;
         grid-template-columns: 80% 20%;
@@ -98,8 +116,6 @@
     .img-container {
         display: inline-grid;
         grid-template-columns: 48px 1fr 48px;
-        align-items: center;
-        justify-items: center;
         background-color: black;
         padding: 16px 0;
         max-height: 100%;
@@ -122,31 +138,31 @@
     .infos {
         background-color: #3a4a5a;
         padding: 16px;
-    }
 
-    .infos .name {
-        font-size: 22px;
-    }
+        .name {
+            font-size: 22px;
+        }
 
-    .infos .name, .infos .description, .infos .details {
-        color: white;
-        padding-bottom: 8px;
-        overflow: hidden;
-    }
+        .name, .description, .details {
+            color: white;
+            padding-bottom: 8px;
+            overflow: hidden;
+        }
 
-    .infos .details {
-        display: flex;
-        align-items: center;
-    }
+        .details {
+            display: flex;
+            align-items: center;
+        }
 
-    .infos .details .icon {
-        height: 28px;
-        width: auto;
-        fill: white;
-        margin-right: 12px;
-    }
+        .icon {
+            height: 28px;
+            width: auto;
+            fill: white;
+            margin-right: 12px;
+        }
 
-    .infos .minimap {
-        width: 100%;
+        .minimap {
+            width: 100%;
+        }
     }
 </style>
